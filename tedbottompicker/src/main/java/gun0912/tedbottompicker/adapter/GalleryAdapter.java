@@ -55,6 +55,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             pickerTiles.add(new PickerTile(PickerTile.GALLERY));
         }
 
+        if (builder.onOnlineItemSelectedCallback != null) {
+            pickerTiles.add(new PickerTile(PickerTile.ONLINE));
+        }
+
+
         Cursor cursor = null;
         try {
             String[] columns;
@@ -71,8 +76,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             }
 
 
-
-
             cursor = context.getApplicationContext().getContentResolver().query(uri, columns, null, null, orderBy);
             //imageCursor = sContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, orderBy);
 
@@ -85,7 +88,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                     String dataIndex;
                     if (builder.mediaType == TedBottomPicker.Builder.MediaType.IMAGE) {
                         dataIndex = MediaStore.Images.Media.DATA;
-                    }else{
+                    } else {
                         dataIndex = MediaStore.Video.VideoColumns.DATA;
                     }
                     String imageLocation = cursor.getString(cursor.getColumnIndex(dataIndex));
@@ -152,6 +155,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         if (pickerTile.isCameraTile()) {
             holder.iv_thumbnail.setBackgroundResource(builder.cameraTileBackgroundResId);
             holder.iv_thumbnail.setImageDrawable(builder.cameraTileDrawable);
+        } else if (pickerTile.isOnline()) {
+            holder.iv_thumbnail.setBackgroundResource(builder.onlineTileBackgroundResId);
+            holder.iv_thumbnail.setImageDrawable(builder.onlineTileDrawable);
         } else if (pickerTile.isGalleryTile()) {
             holder.iv_thumbnail.setBackgroundResource(builder.galleryTileBackgroundResId);
             holder.iv_thumbnail.setImageDrawable(builder.galleryTileDrawable);
@@ -220,12 +226,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         public void onItemClick(View view, int position);
     }
 
+    public static interface OnOnlineItemSelectedCallback {
+        void onSelected();
+    }
 
     public static class PickerTile {
 
         public static final int IMAGE = 1;
         public static final int CAMERA = 2;
         public static final int GALLERY = 3;
+        public static final int ONLINE = 4;
         protected final Uri imageUri;
         protected final
         @TileType
@@ -262,6 +272,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                 return "CameraTile";
             } else if (isGalleryTile()) {
                 return "PickerTile";
+            } else if (isOnline()) {
+                return "OnlineTile";
             } else {
                 return "Invalid item";
             }
@@ -279,12 +291,16 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             return tileType == GALLERY;
         }
 
-        @IntDef({IMAGE, CAMERA, GALLERY})
+        public boolean isOnline() {
+            return tileType == ONLINE;
+        }
+
+        @IntDef({IMAGE, CAMERA, GALLERY, ONLINE})
         @Retention(RetentionPolicy.SOURCE)
         public @interface TileType {
         }
 
-        @IntDef({CAMERA, GALLERY})
+        @IntDef({CAMERA, GALLERY, ONLINE})
         @Retention(RetentionPolicy.SOURCE)
         public @interface SpecialTileType {
         }

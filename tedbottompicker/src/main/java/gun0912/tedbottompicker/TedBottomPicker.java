@@ -280,6 +280,9 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
                     case GalleryAdapter.PickerTile.GALLERY:
                         startGalleryIntent();
                         break;
+                    case GalleryAdapter.PickerTile.ONLINE:
+                        builder.onOnlineItemSelectedCallback.onSelected();
+                        break;
                     case GalleryAdapter.PickerTile.IMAGE:
                         complete(pickerTile.getImageUri());
 
@@ -579,6 +582,10 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
     }
 
+    public void onOnlineResult(Uri uri) {
+        complete(uri);
+    }
+
     private void onActivityResultCamera(final Uri cameraImageUri) {
 
         MediaScannerConnection.scanFile(getContext(), new String[]{cameraImageUri.getPath()}, new String[]{"image/jpeg"}, new MediaScannerConnection.MediaScannerConnectionClient() {
@@ -644,6 +651,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public Context context;
         public int previewMaxCount = 25;
         public Drawable cameraTileDrawable;
+        public Drawable onlineTileDrawable;
         public Drawable galleryTileDrawable;
 
         public Drawable deSelectIconDrawable;
@@ -658,6 +666,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public boolean showGallery = true;
         public int peekHeight = -1;
         public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
+        public int onlineTileBackgroundResId = R.color.tedbottompicker_camera;
         public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
 
         public String title;
@@ -677,6 +686,8 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         ArrayList<Uri> selectedUriList;
         Uri selectedUri;
 
+        public GalleryAdapter.OnOnlineItemSelectedCallback onOnlineItemSelectedCallback;
+
         public Builder(@NonNull Context context) {
 
             this.context = context;
@@ -693,6 +704,21 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public Builder setCameraTile(Drawable cameraTileDrawable) {
             this.cameraTileDrawable = cameraTileDrawable;
+            return this;
+        }
+
+        public Builder setOnOnlineItemSelectedCallback(GalleryAdapter.OnOnlineItemSelectedCallback onOnlineItemSelectedCallback) {
+            this.onOnlineItemSelectedCallback = onOnlineItemSelectedCallback;
+            return this;
+        }
+
+        public Builder setOnlineTile(@DrawableRes int onlineTileResId) {
+            setOnlineTile(ContextCompat.getDrawable(context, onlineTileResId));
+            return this;
+        }
+
+        public Builder setOnlineTile(Drawable onlineTileDrawable) {
+            this.onlineTileDrawable = onlineTileDrawable;
             return this;
         }
 
@@ -793,6 +819,11 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
         public Builder setGalleryTileBackgroundResId(@ColorRes int colorResId) {
             this.galleryTileBackgroundResId = colorResId;
+            return this;
+        }
+
+        public Builder setOnlineTileBackgroundResId(@ColorRes int colorResId) {
+            this.onlineTileBackgroundResId = colorResId;
             return this;
         }
 
