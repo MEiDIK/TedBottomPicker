@@ -666,7 +666,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
         public boolean showGallery = true;
         public int peekHeight = -1;
         public int cameraTileBackgroundResId = R.color.tedbottompicker_camera;
-        public int onlineTileBackgroundResId = R.color.tedbottompicker_camera;
+        public int onlineTileBackgroundResId = R.color.tedbottompicker_online;
         public int galleryTileBackgroundResId = R.color.tedbottompicker_gallery;
 
         public String title;
@@ -694,6 +694,7 @@ public class TedBottomPicker extends BottomSheetDialogFragment {
 
             setCameraTile(R.drawable.ic_camera);
             setGalleryTile(R.drawable.ic_gallery);
+            setOnlineTile(R.drawable.ic_online);
             setSpacingResId(R.dimen.tedbottompicker_grid_layout_margin);
         }
 
